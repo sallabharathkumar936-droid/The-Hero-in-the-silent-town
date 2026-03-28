@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Hero of the Silent Town | Open World City</title>
+    <meta name="description" content="3D open-world city survival game — drive vehicles, use weapons, fight zombies in a realistic city.">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- ======= INTRO SCREEN ======= -->
+    <div id="intro-screen">
+        <div class="intro-content">
+            <h1 class="intro-title">HERO OF THE SILENT TOWN</h1>
+            <p class="intro-desc">Survive the outbreak. Drive fast. Take back the city.</p>
+            <button id="start-btn" onclick="startGame()">PLAY NOW</button>
+        </div>
+    </div>
+
+    <!-- ======= UI LAYER ======= -->
+    <div id="ui-layer" style="display: none;">
+
+        <!-- TOP HUD -->
+        <div id="hud-top">
+            <div id="hud-left">
+                <div class="game-title">HERO OF THE SILENT TOWN</div>
+                <div class="stat-row">
+                    <span class="stat-icon">❤️</span>
+                    <div class="bar-bg"><div id="health-fill" class="bar health-bar"></div></div>
+                    <span id="health-val" class="stat-num">100</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-icon">⚡</span>
+                    <div class="bar-bg"><div id="stamina-fill" class="bar stamina-bar"></div></div>
+                    <span id="stamina-val" class="stat-num">100</span>
+                </div>
+                <div id="status-pills">
+                    <span id="vehicle-pill" class="pill">🚶 ON FOOT</span>
+                    <span id="zombie-pill" class="pill">🧟 0 NEAR</span>
+                    <span id="heal-pill" class="pill green hidden">💚 HEALING</span>
+                </div>
+            </div>
+
+            <div id="hud-right">
+                <div id="minimap-wrap">
+                    <canvas id="minimap" width="190" height="190"></canvas>
+                    <div id="minimap-label">MAP</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WEAPON BAR -->
+        <div id="weapon-bar">
+            <div class="ws" id="ws-0" onclick="selectWeapon(0)">
+                <span class="ws-key">1</span>
+                <span class="ws-icon">🔫</span>
+                <span class="ws-name">Pistol</span>
+                <span class="ws-ammo" id="wa-0">12</span>
+            </div>
+            <div class="ws" id="ws-1" onclick="selectWeapon(1)">
+                <span class="ws-key">2</span>
+                <span class="ws-icon">🪃</span>
+                <span class="ws-name">AK-47</span>
+                <span class="ws-ammo" id="wa-1">30</span>
+            </div>
+
+        </div>
+
+        <!-- INTERACTION PROMPT -->
+        <div id="interaction-prompt" class="hidden"></div>
+
+        <!-- JOYSTICK (bottom-left) -->
+        <div id="joystick-wrap">
+            <div id="joystick-base" id="joystick-base">
+                <div id="joystick-knob"></div>
+            </div>
+            <div class="joy-label">MOVE</div>
+        </div>
+
+        <!-- FIRE BUTTON (bottom-right) -->
+        <div id="fire-wrap">
+            <button id="fire-btn" onpointerdown="fireBtnDown()" onpointerup="fireBtnUp()">🔫<br><small>FIRE</small></button>
+            <button id="reload-btn" onclick="reload()">🔄<br><small>RELOAD</small></button>
+            <button id="ekey-btn" onclick="tryInteract()">F<br><small>ENTER</small></button>
+        </div>
+
+        <!-- CONTROLS HINT -->
+        <div id="controls-hint">
+            WASD = Move &nbsp;·&nbsp; Mouse = Aim &nbsp;·&nbsp; Click = Fire &nbsp;·&nbsp; F = Vehicle &nbsp;·&nbsp; 1 = Pistol &nbsp;·&nbsp; 2 = AK-47 &nbsp;·&nbsp; R = Reload &nbsp;·&nbsp; Shift = Sprint &nbsp;·&nbsp; Scroll = Zoom
+        </div>
+    </div>
+
+    <!-- GAMEOVER SCREEN -->
+    <div id="gameover-screen" class="hidden">
+        <div id="gameover-box">
+            <h1 id="gameover-title">💀 GAME OVER</h1>
+            <p id="gameover-msg">The zombies got you!</p>
+            <button id="restart-btn" onclick="restartGame()">▶ PLAY AGAIN</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
