@@ -11,6 +11,10 @@ const mmCtx = mmCanvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
+// --- DYNAMIC ASSETS ---
+const carImg = new Image();
+carImg.src = 'car.png';
+
 // --- GAME STATE ---
 const state = {
     player: {
@@ -352,39 +356,55 @@ class Vehicle {
             // Shadow
             ctx.fillStyle = 'rgba(0,0,0,0.2)';
             ctx.fillRect(-this.h/2+8, -this.w/2+8, this.h, this.w);
-            // Body
-            ctx.fillStyle = this.color;
-            ctx.beginPath(); ctx.roundRect(-this.h/2, -this.w/2, this.h, this.w, 4); ctx.fill();
-            // Roof
-            ctx.fillStyle = 'rgba(255,255,255,0.18)';
-            ctx.beginPath(); ctx.roundRect(-this.h/4, -this.w/2+4, this.h/2, this.w-8, 3); ctx.fill();
-            // Windshield
-            ctx.fillStyle = 'rgba(130,210,255,0.6)';
-            ctx.fillRect(this.h/4, -this.w/2+6, 10, this.w-12);
-            // Rear window
-            ctx.fillStyle = 'rgba(130,210,255,0.4)';
-            ctx.fillRect(-this.h/4-8, -this.w/2+6, 8, this.w-12);
-            // Wheels (4)
-            ctx.fillStyle = '#111';
-            let wx = this.h/2-12, wy = this.w/2;
-            [[-wx,-wy+3],[wx,-wy+3],[-wx,wy-3],[wx,wy-3]].forEach(([ex,ey]) => {
-                ctx.beginPath(); ctx.ellipse(ex, ey, 7, 5, 0, 0, Math.PI*2); ctx.fill();
-            });
-            // Headlights
-            ctx.fillStyle = '#fffde0';
-            ctx.shadowBlur = 12; ctx.shadowColor = '#ffff00';
-            ctx.beginPath(); ctx.arc(this.h/2-2, -this.w/4, 4, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(this.h/2-2, this.w/4, 4, 0, Math.PI*2); ctx.fill();
-            // Taillights
-            ctx.fillStyle = '#e00';
-            ctx.shadowBlur = 6; ctx.shadowColor = 'red';
-            ctx.beginPath(); ctx.arc(-this.h/2+3, -this.w/4, 3, 0, Math.PI*2); ctx.fill();
-            ctx.beginPath(); ctx.arc(-this.h/2+3, this.w/4, 3, 0, Math.PI*2); ctx.fill();
-            // Brake lights
-            if (this.braking) {
-                ctx.fillStyle = 'rgba(255,0,0,0.5)';
-                ctx.beginPath(); ctx.arc(-this.h/2+3, -this.w/4, 7, 0, Math.PI*2); ctx.fill();
-                ctx.beginPath(); ctx.arc(-this.h/2+3, this.w/4, 7, 0, Math.PI*2); ctx.fill();
+            // Body & Lighting Override for Recraft Image Sprite
+            if (carImg.complete && carImg.naturalWidth > 0) {
+                // Adjust size & alignment for the recraft image proportions
+                ctx.drawImage(carImg, -this.h/2 * 1.5, -this.w/2 * 2, this.h * 1.5, this.w * 3.5);
+                
+                // Optional: overlay small brake lights over the 3D car back
+                if (this.braking) {
+                    ctx.fillStyle = 'rgba(255,0,0,0.8)';
+                    ctx.shadowBlur = 10; ctx.shadowColor = 'red';
+                    // We offset roughly where the taillights might be based on normal dimensions
+                    ctx.beginPath(); ctx.arc(-this.h/2 * 1.2, -this.w/4 * 1.5, 6, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(-this.h/2 * 1.2, this.w/4 * 1.5, 6, 0, Math.PI*2); ctx.fill();
+                }
+            } else {
+                // Fallback to basic Canvas Shapes
+                // Body
+                ctx.fillStyle = this.color;
+                ctx.beginPath(); ctx.roundRect(-this.h/2, -this.w/2, this.h, this.w, 4); ctx.fill();
+                // Roof
+                ctx.fillStyle = 'rgba(255,255,255,0.18)';
+                ctx.beginPath(); ctx.roundRect(-this.h/4, -this.w/2+4, this.h/2, this.w-8, 3); ctx.fill();
+                // Windshield
+                ctx.fillStyle = 'rgba(130,210,255,0.6)';
+                ctx.fillRect(this.h/4, -this.w/2+6, 10, this.w-12);
+                // Rear window
+                ctx.fillStyle = 'rgba(130,210,255,0.4)';
+                ctx.fillRect(-this.h/4-8, -this.w/2+6, 8, this.w-12);
+                // Wheels (4)
+                ctx.fillStyle = '#111';
+                let wx = this.h/2-12, wy = this.w/2;
+                [[-wx,-wy+3],[wx,-wy+3],[-wx,wy-3],[wx,wy-3]].forEach(([ex,ey]) => {
+                    ctx.beginPath(); ctx.ellipse(ex, ey, 7, 5, 0, 0, Math.PI*2); ctx.fill();
+                });
+                // Headlights
+                ctx.fillStyle = '#fffde0';
+                ctx.shadowBlur = 12; ctx.shadowColor = '#ffff00';
+                ctx.beginPath(); ctx.arc(this.h/2-2, -this.w/4, 4, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(this.h/2-2, this.w/4, 4, 0, Math.PI*2); ctx.fill();
+                // Taillights
+                ctx.fillStyle = '#e00';
+                ctx.shadowBlur = 6; ctx.shadowColor = 'red';
+                ctx.beginPath(); ctx.arc(-this.h/2+3, -this.w/4, 3, 0, Math.PI*2); ctx.fill();
+                ctx.beginPath(); ctx.arc(-this.h/2+3, this.w/4, 3, 0, Math.PI*2); ctx.fill();
+                // Brake lights
+                if (this.braking) {
+                    ctx.fillStyle = 'rgba(255,0,0,0.5)';
+                    ctx.beginPath(); ctx.arc(-this.h/2+3, -this.w/4, 7, 0, Math.PI*2); ctx.fill();
+                    ctx.beginPath(); ctx.arc(-this.h/2+3, this.w/4, 7, 0, Math.PI*2); ctx.fill();
+                }
             }
         }
         ctx.shadowBlur = 0;
